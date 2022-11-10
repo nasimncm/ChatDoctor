@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Chat Doctor</string>
+    <string name="login_details">Login Details</string>
+    <string name="enter_email_address">Enter Email Address</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_confirm_password">Enter Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_registered">Already Registered.</string>
+    <string name="sign_in">Sign In</string>
+    <string name="design_develop">Design &amp; Develop by @Appsums Technology</string>
+    <string name="signup_details">Signup Details</string>
+    <string name="not_registered_yet">Not Registered yet.</string>
+    <string name="sign_up_underline"><u>Sign Up</u></string>
+    <string name="sign_in_underline"><u>Sign In</u></string>
+    <string name="profile">Profile</string>
+    <string name="search">Search</string>
+    <string name="name">Name</string>
+    <string name="available">Available</string>
+    <string name="email">nasim@appsums.com</string>
+    <string name="logout">Logout</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="text_messages">Message</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="status">Offline</string>
+</resources>

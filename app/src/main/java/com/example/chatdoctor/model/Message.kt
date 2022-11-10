@@ -1,12 +1,9 @@
 package com.example.chatdoctor.model
 
-class Message {
-    var message: String? = null
-    var senderId: String? = null
-
-    constructor(){}
-    constructor(message: String?, senderId: String?){
-        this.message = message
-        this.senderId = senderId
-    }
-}
+data class Message(
+    var message: String? = null,
+    var senderId: String? = null,
+    var timeStamp: Long? = null,
+    var messageId: String? = null,
+    var imageUrl: String? = null
+)

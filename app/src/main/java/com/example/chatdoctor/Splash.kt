@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import com.example.chatdoctor.activity.Chatboard
 import com.google.firebase.auth.FirebaseAuth
 
 class Splash : AppCompatActivity() {
