@@ -24,10 +24,10 @@ class ProfileSection : AppCompatActivity() {
         val ivProfile = findViewById<ImageView>(R.id.ivProfile)
         val profileStatus = findViewById<TextView>(R.id.profileStatus)
 
-        //make a variable name of presentUserId and call the FirebaseAuth with getInstance currentuser with uid
+        //make a variable name of presentUserId and call the FirebaseAuth with getInstance current user with uid
         val presentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
-        //call firebasedatabase and get the refrance of created data base name "user" and find the urrent user with uid
+        //call firebasedatabase and get the refrance of created data base name "user" and find the current user with uid
         FirebaseDatabase.getInstance().getReference("user").child(presentUserId.toString())
 
             //add successes listner and get the image and name
