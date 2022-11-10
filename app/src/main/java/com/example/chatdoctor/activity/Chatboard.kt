@@ -3,14 +3,12 @@ package com.example.chatdoctor.activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.chatdoctor.Loader
 import com.example.chatdoctor.MainActivity
 import com.example.chatdoctor.R
 import com.example.chatdoctor.adapter.UserAdapter
