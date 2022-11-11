@@ -10,7 +10,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatdoctor.R
-import com.example.chatdoctor.databinding.DeleteLayoutBinding
+import com.example.chatdoctor.databinding.DeleteLayoutForReceiverBinding
+import com.example.chatdoctor.databinding.DeleteLayoutForSenderBinding
 import com.example.chatdoctor.model.Message
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -60,8 +61,8 @@ class MessageAdapter(
                     .placeholder(R.drawable.placeholder).into(viewHolder.sentImage)
             }
             viewHolder.itemView.setOnClickListener {
-                val view = LayoutInflater.from(context).inflate(R.layout.delete_layout, null)
-                val binding: DeleteLayoutBinding = DeleteLayoutBinding.bind(view)
+                val view = LayoutInflater.from(context).inflate(R.layout.delete_layout_for_sender, null)
+                val binding: DeleteLayoutForSenderBinding = DeleteLayoutForSenderBinding.bind(view)
                 val dialog = AlertDialog.Builder(context)
                     .setTitle("Delete Message")
                     .setView(binding.root)
@@ -105,6 +106,27 @@ class MessageAdapter(
                 Glide.with(context).load(currentMessage.imageUrl)
                     .placeholder(R.drawable.placeholder)
                     .into(viewHolder.receiveImage)
+            }
+            viewHolder.itemView.setOnClickListener {
+                val view = LayoutInflater.from(context).inflate(R.layout.delete_layout_for_receiver, null)
+                val binding: DeleteLayoutForReceiverBinding = DeleteLayoutForReceiverBinding.bind(view)
+                val dialog = AlertDialog.Builder(context)
+                    .setTitle("Delete Message")
+                    .setView(binding.root)
+                    .create()
+                binding.delete.setOnClickListener {
+                    currentMessage.messageId.let { it1 ->
+                        FirebaseDatabase.getInstance().reference.child("chats")
+                            .child(receiverRoom)
+                            .child("message")
+                            .child(it1!!)
+                            .setValue(null)
+                    }
+                    dialog.dismiss()
+                }
+                binding.cancel.setOnClickListener { dialog.dismiss() }
+                dialog.show()
+                false
             }
         }
     }

@@ -17,7 +17,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.chatdoctor.R
 import com.example.chatdoctor.adapter.MessageAdapter
@@ -27,8 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_chatroom.*
-import java.util.Date
-import kotlin.random.Random
+import java.util.*
 
 class Chatroom : AppCompatActivity() {
     private lateinit var chatRecyclerView: RecyclerView
@@ -39,20 +37,19 @@ class Chatroom : AppCompatActivity() {
     private lateinit var databaseAuth: DatabaseReference
     private lateinit var database: FirebaseDatabase
     private lateinit var storage: FirebaseStorage
-    private var profileImage: String? =null
+    private var profileImage: String? = null
     private lateinit var senderUid: String
     private lateinit var receiverUid: String
     private lateinit var binding: ActivityChatroomBinding
-    private lateinit var dialog:ProgressDialog
+    private lateinit var dialog: ProgressDialog
     private lateinit var date: Date
-
     var receiverRoom: String? = null
     var senderRoom: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityChatroomBinding= ActivityChatroomBinding.inflate(layoutInflater)
+        val binding: ActivityChatroomBinding = ActivityChatroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
@@ -83,14 +80,14 @@ class Chatroom : AppCompatActivity() {
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
         databaseAuth = FirebaseDatabase.getInstance().reference
         database.reference.child("presence").child(receiverUid!!)
-            .addValueEventListener(object :ValueEventListener{
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()){
-                        val tvStatus =snapshot.getValue(String::class.java)
-                        if (tvStatus == "Offline"){
+                    if (snapshot.exists()) {
+                        val tvStatus = snapshot.getValue(String::class.java)
+                        if (tvStatus == "Offline") {
                             binding.tvStatus.visibility = View.GONE
-                        }else{
-                            binding.tvStatus.setText(tvStatus)
+                        } else {
+                            binding.tvStatus.text = tvStatus
                             binding.tvStatus.visibility = View.VISIBLE
                         }
                     }
@@ -114,7 +111,7 @@ class Chatroom : AppCompatActivity() {
                         messageList.add(message!!)
                     }
                     messageAdapter.notifyDataSetChanged()
-                    chatRecyclerView.scrollToPosition(messageList.size-1)
+                    chatRecyclerView.scrollToPosition(messageList.size - 1)
 
                 }
 
@@ -124,7 +121,7 @@ class Chatroom : AppCompatActivity() {
 
         msgSend.setOnClickListener {
             val myMessage = etMessage.text.toString()
-            if (myMessage.isNotEmpty()){
+            if (myMessage.isNotEmpty()) {
                 val messageObject = Message(myMessage, senderUid)
                 databaseAuth.child("chats").child(senderRoom!!).child("messages").push()
                     .setValue(messageObject).addOnSuccessListener {
@@ -132,7 +129,7 @@ class Chatroom : AppCompatActivity() {
                             .setValue(messageObject)
                     }
                 etMessage.setText("")
-            }else{
+            } else {
                 Toast.makeText(this, "Write some message in the box", Toast.LENGTH_SHORT).show()
             }
         }
@@ -143,7 +140,7 @@ class Chatroom : AppCompatActivity() {
             startActivityForResult(intent, 25)
         }
         val handler = Handler()
-        etMessage.addTextChangedListener(object :TextWatcher{
+        etMessage.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -155,6 +152,7 @@ class Chatroom : AppCompatActivity() {
                 handler.removeCallbacksAndMessages(null)
                 handler.postDelayed(userStoppedTyping, 1000)
             }
+
             val userStoppedTyping = Runnable {
                 database.reference.child("presence")
                     .child(senderUid!!)
@@ -167,7 +165,7 @@ class Chatroom : AppCompatActivity() {
         messageBox = findViewById(R.id.etMessage)
         sendButton = findViewById(R.id.msgSend)
         messageList = ArrayList()
-        messageAdapter = MessageAdapter(this, messageList, senderRoom!!,receiverRoom!!)
+        messageAdapter = MessageAdapter(this, messageList, senderRoom!!, receiverRoom!!)
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
 
         chatRecyclerView.adapter = messageAdapter
@@ -179,20 +177,20 @@ class Chatroom : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 25){
-            if (data != null){
-                if (data.data != null){
+        if (requestCode == 25) {
+            if (data != null) {
+                if (data.data != null) {
                     val selectedImage = data.data
                     val calendar = Calendar.getInstance()
                     dialog.show()
                     var refence = storage.reference.child("chats")
-                        .child(calendar.timeInMillis.toString()+"")
-                    refence.putFile(selectedImage!!).addOnCompleteListener { task->
+                        .child(calendar.timeInMillis.toString() + "")
+                    refence.putFile(selectedImage!!).addOnCompleteListener { task ->
                         dialog.dismiss()
-                        if (task.isSuccessful){
-                            refence.downloadUrl.addOnSuccessListener {uri->
+                        if (task.isSuccessful) {
+                            refence.downloadUrl.addOnSuccessListener { uri ->
                                 val filePath = uri.toString()
-                                val etMessage : String = messageBox.text.toString()
+                                val etMessage: String = messageBox.text.toString()
                                 val date = Date()
                                 val message = Message(etMessage, senderUid, date.time)
                                 message.message = "photo"
@@ -203,8 +201,10 @@ class Chatroom : AppCompatActivity() {
                                 lastMsgObj["lastMsg"] = message.message!!
                                 lastMsgObj["lastMsgTime"] = date.time
                                 database.reference.child("chats").updateChildren(lastMsgObj)
-                                database.reference.child("chats").child(receiverRoom!!).updateChildren(lastMsgObj)
-                                database.reference.child("chats").child(senderRoom!!).child("messages")
+                                database.reference.child("chats").child(receiverRoom!!)
+                                    .updateChildren(lastMsgObj)
+                                database.reference.child("chats").child(senderRoom!!)
+                                    .child("messages")
                                     .child(randomKey!!)
                                     .setValue(message).addOnSuccessListener {
                                         database.reference.child("chats")
