@@ -13,7 +13,7 @@
         android:background="@drawable/sent_box"
         android:textSize="15sp"
         android:fontFamily="@font/montserrat_regular"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
