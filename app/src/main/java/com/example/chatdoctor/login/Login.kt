@@ -1,4 +1,4 @@
-package com.example.chatdoctor
+package com.example.chatdoctor.login
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.chatdoctor.R
 import com.example.chatdoctor.activity.Chatboard
 import com.example.chatdoctor.sharepref.Constant
 import com.example.chatdoctor.sharepref.PrefHelper

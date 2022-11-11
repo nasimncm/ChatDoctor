@@ -1,4 +1,4 @@
-package com.example.chatdoctor
+package com.example.chatdoctor.login
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.chatdoctor.R
 import com.example.chatdoctor.activity.Profile
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_signup.*

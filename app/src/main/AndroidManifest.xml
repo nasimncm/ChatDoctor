@@ -58,21 +58,21 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Signup"
+            android:name=".login.Signup"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Login"
+            android:name=".login.Login"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".login.MainActivity"
             android:exported="false"></activity>
     </application>
 
