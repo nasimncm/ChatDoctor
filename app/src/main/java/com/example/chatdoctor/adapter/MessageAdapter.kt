@@ -106,7 +106,7 @@ class MessageAdapter(
                 Glide.with(context).load(currentMessage.imageUrl)
                     .placeholder(R.drawable.placeholder)
                     .into(viewHolder.receiveImage)
-            }
+            }/*
             viewHolder.itemView.setOnClickListener {
                 val view = LayoutInflater.from(context).inflate(R.layout.delete_layout_for_receiver, null)
                 val binding: DeleteLayoutForReceiverBinding = DeleteLayoutForReceiverBinding.bind(view)
@@ -127,7 +127,7 @@ class MessageAdapter(
                 binding.cancel.setOnClickListener { dialog.dismiss() }
                 dialog.show()
                 false
-            }
+            }*/
         }
     }
 

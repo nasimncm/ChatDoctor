@@ -46,20 +46,21 @@ class Chatroom : AppCompatActivity() {
     var receiverRoom: String? = null
     var senderRoom: String? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityChatroomBinding = ActivityChatroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
+        //database, firebase storage, senderUid, date initialize
         database = FirebaseDatabase.getInstance()
+        storage = FirebaseStorage.getInstance()
+        senderUid = FirebaseDatabase.getInstance().toString()
+        date = Date()
+
+        //dialog setup when data not load
         dialog = ProgressDialog(this)
         dialog.setMessage("Uploading Image...")
         dialog.setCancelable(false)
-        storage = FirebaseStorage.getInstance()
-        date = Date()
 
         //get name code
         val tvName = findViewById<TextView>(R.id.tvName)
@@ -73,16 +74,18 @@ class Chatroom : AppCompatActivity() {
         ivBackButton.setOnClickListener {
             onBackPressed()
         }
-        senderUid = FirebaseDatabase.getInstance().toString()
 
         // code for online, offline & typing Status show
+        //taking reference of receiver and sender UID
         val receiverUid = intent.getStringExtra("uid")
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
+        //database initialize
         databaseAuth = FirebaseDatabase.getInstance().reference
+        // create presence folder in database and add in receiverUID
         database.reference.child("presence").child(receiverUid!!)
-            .addValueEventListener(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener { //create object showing status
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
+                    if (snapshot.exists()) { //read the data through snapshot.
                         val tvStatus = snapshot.getValue(String::class.java)
                         if (tvStatus == "Offline") {
                             binding.tvStatus.visibility = View.GONE
@@ -120,6 +123,7 @@ class Chatroom : AppCompatActivity() {
             })
 
         msgSend.setOnClickListener {
+           // val chatMessageId = UUID.randomUUID().toString()
             val myMessage = etMessage.text.toString()
             if (myMessage.isNotEmpty()) {
                 val messageObject = Message(myMessage, senderUid)

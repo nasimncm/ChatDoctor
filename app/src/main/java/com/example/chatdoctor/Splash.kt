@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chatdoctor.activity.Chatboard
 import com.example.chatdoctor.login.MainActivity
@@ -15,6 +17,10 @@ class Splash : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        val tvChatDoctor = findViewById<TextView>(R.id.tvChatDoctor)
+        val slideAnimation = AnimationUtils.loadAnimation(this, R.anim.side_slide)
+        tvChatDoctor.startAnimation(slideAnimation)
+
         Handler(Looper.getMainLooper()).postDelayed({
             if (checkLoginStatus()) {
                 val intent = Intent(this, Chatboard::class.java)
@@ -25,7 +31,7 @@ class Splash : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
-        }, 3000)
+        }, 5000)
     }
 
     private fun checkLoginStatus(): Boolean {

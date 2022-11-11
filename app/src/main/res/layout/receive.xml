@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="5dp">
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/receiveMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="This is receive message"
         android:background="@drawable/receive_box"
-        android:textSize="15sp"
-        android:padding="10dp"
-        android:textColor="@color/black"
         android:fontFamily="@font/montserrat_regular"
+        android:padding="10dp"
+        android:text="This is receive message"
+        android:textColor="@color/black"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
     <!--<TextView
         android:id="@+id/receiveTime"
         android:layout_width="wrap_content"
@@ -27,12 +28,12 @@
         android:id="@+id/receiveImage"
         android:layout_width="200dp"
         android:layout_height="130dp"
+        android:layout_marginTop="10dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        app:srcCompat="@drawable/placeholder"
-        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/receiveMessage"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:srcCompat="@drawable/placeholder" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
