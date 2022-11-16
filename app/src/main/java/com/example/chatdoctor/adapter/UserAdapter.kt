@@ -5,6 +5,8 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +17,10 @@ import com.example.chatdoctor.model.UserModel
 
 class UserAdapter(
     val context: Context,
-    val userList: ArrayList<UserModel>
-) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+    var userList: ArrayList<UserModel>
+) : RecyclerView.Adapter<UserAdapter.UserViewHolder>(), Filterable {
+
+    private var allContact = userList
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtName = itemView.findViewById<TextView>(R.id.tvUserName)
@@ -45,5 +49,33 @@ class UserAdapter(
 
     override fun getItemCount(): Int {
         return userList.size
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter(){
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val searchContent = constraint.toString()
+                if (searchContent.isEmpty())
+                    allContact = userList
+                else{
+                    val filterContact = ArrayList<UserModel>()
+                    for (userModel in userList){
+                        if (userModel.name?.toLowerCase()
+                                ?.trim()?.contains(searchContent.toLowerCase().trim()) == true
+                        )
+                            filterContact.add(userModel)
+                    }
+                    allContact = filterContact
+                }
+                val filterResults = FilterResults()
+                filterResults.values=allContact
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                userList = results?.values as ArrayList<UserModel>
+                notifyDataSetChanged()
+            }
+        }
     }
 }

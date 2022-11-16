@@ -88,7 +88,8 @@ class Chatroom : AppCompatActivity() {
                     if (snapshot.exists()) { //read the data through snapshot.
                         val tvStatus = snapshot.getValue(String::class.java)
                         if (tvStatus == "Offline") {
-                            binding.tvStatus.visibility = View.GONE
+                            //set the offline status
+                            binding.tvStatus.visibility = View.VISIBLE
                         } else {
                             binding.tvStatus.text = tvStatus
                             binding.tvStatus.visibility = View.VISIBLE
@@ -110,7 +111,7 @@ class Chatroom : AppCompatActivity() {
                     messageList.clear()
                     for (postSnapshot in snapshot.children) {
                         val message = postSnapshot.getValue(Message::class.java)
-                        // message!!.messageId= postSnapshot.key
+                         message!!.messageId= postSnapshot.key
                         messageList.add(message!!)
                     }
                     messageAdapter.notifyDataSetChanged()
@@ -199,7 +200,7 @@ class Chatroom : AppCompatActivity() {
                                 val message = Message(etMessage, senderUid, date.time)
                                 message.message = "photo"
                                 message.imageUrl = filePath
-                                messageBox.setText("")
+                              //  messageBox.setText("")
                                 val randomKey = database.reference.push().key
                                 val lastMsgObj = HashMap<String, Any>()
                                 lastMsgObj["lastMsg"] = message.message!!
@@ -215,9 +216,7 @@ class Chatroom : AppCompatActivity() {
                                             .child(receiverRoom!!)
                                             .child("messages")
                                             .child(randomKey)
-                                            .setValue(message).addOnSuccessListener {
-
-                                            }
+                                            .setValue(message).addOnSuccessListener {}
                                     }
                             }
                         }

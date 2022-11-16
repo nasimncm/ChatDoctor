@@ -109,7 +109,7 @@
             android:layout_gravity="right"
             android:clickable="true"
             android:paddingEnd="15dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:srcCompat="@drawable/attachment" />
 
     </com.google.android.material.card.MaterialCardView>

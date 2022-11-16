@@ -1,17 +1,20 @@
 package com.example.chatdoctor.activity
 
 import android.app.ProgressDialog
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.chatdoctor.login.MainActivity
 import com.example.chatdoctor.R
 import com.example.chatdoctor.adapter.UserAdapter
+import com.example.chatdoctor.login.MainActivity
 import com.example.chatdoctor.model.UserModel
 import com.example.chatdoctor.sharepref.Constant
 import com.example.chatdoctor.sharepref.PrefHelper
@@ -29,10 +32,13 @@ class Chatboard : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgress: ProgressDialog
+    private lateinit var search: SearchView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatboard)
         setSupportActionBar(toolbar)
+
+        search = SearchView(this)
 
         //swipe page refresh code
         swipeRefreshLayout = findViewById(R.id.swipeLayout)
@@ -71,7 +77,6 @@ class Chatboard : AppCompatActivity() {
         adapter = UserAdapter(this, userList)
 
         //Linear layout manager initialize in recycler view
-        userRecyclerView.layoutManager = LinearLayoutManager(this)
 
         //set the adapter in recycler view
         userRecyclerView.adapter = adapter
@@ -110,6 +115,34 @@ class Chatboard : AppCompatActivity() {
     //menu creation
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+
+
+        val searchViewItem = menu?.findItem(R.id.search)
+        val searchView = MenuItemCompat.getActionView(searchViewItem) as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchView.clearFocus()
+                if (adapter.equals(query)){
+                    adapter.filter.filter(query)
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                userRecyclerView = findViewById(R.id.rvUserList)
+
+                //set the adapter in recycler view
+                userRecyclerView.adapter = adapter
+                getChatList()
+                adapter.notifyDataSetChanged()
+                return false
+            }
+        })
+
+
+
+
         return true
     }
 
@@ -120,7 +153,14 @@ class Chatboard : AppCompatActivity() {
                 val intent = Intent(this, ProfileSection::class.java)
                 startActivity(intent)
             }
-            R.id.search -> {}
+            R.id.search -> {
+                val id = item.itemId
+                if (id == R.id.search){
+                    val searchManager = this.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+                    searchManager.setOnDismissListener {  }
+                    onSearchRequested()
+                }
+            }
             R.id.logout -> {
                 prefHelper.clear()
                 firebaseAuth.signOut()

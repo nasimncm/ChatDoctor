@@ -2,16 +2,22 @@ package com.example.chatdoctor.activity
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import com.bumptech.glide.Glide
 import com.example.chatdoctor.R
+import com.example.chatdoctor.adapter.UserAdapter
+import com.example.chatdoctor.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_profile_section.*
 
 class ProfileSection : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_section)
