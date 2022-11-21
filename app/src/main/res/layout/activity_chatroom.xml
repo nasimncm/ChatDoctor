@@ -79,6 +79,150 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/documentIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="20"
+                android:background="@drawable/circle_bg"
+                android:padding="10dp"
+                android:src="@drawable/document"
+                app:layout_constraintStart_toStartOf="@+id/constraint"
+                app:layout_constraintTop_toTopOf="@+id/constraint"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Document"
+                app:layout_constraintEnd_toEndOf="@+id/documentIcon"
+                app:layout_constraintStart_toStartOf="@+id/documentIcon"
+                app:layout_constraintTop_toBottomOf="@+id/documentIcon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/galleryIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="20"
+                android:background="@drawable/circle_for_gallery"
+                android:padding="10dp"
+                android:src="@drawable/gallery"
+                app:layout_constraintEnd_toStartOf="@+id/cameraIcon"
+                app:layout_constraintStart_toEndOf="@+id/documentIcon"
+                app:layout_constraintTop_toTopOf="@+id/constraint"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Gallery"
+                app:layout_constraintEnd_toEndOf="@+id/galleryIcon"
+                app:layout_constraintStart_toStartOf="@+id/galleryIcon"
+                app:layout_constraintTop_toBottomOf="@+id/galleryIcon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/cameraIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="30dp"
+                android:layout_weight="20"
+                android:background="@drawable/circle_for_camera"
+                android:padding="10dp"
+                android:src="@drawable/camera"
+                app:layout_constraintEnd_toEndOf="@id/constraint"
+                app:layout_constraintTop_toTopOf="@+id/constraint"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Camera"
+                app:layout_constraintEnd_toEndOf="@+id/cameraIcon"
+                app:layout_constraintStart_toStartOf="@+id/cameraIcon"
+                app:layout_constraintTop_toBottomOf="@+id/cameraIcon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/audioIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="20"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/circle_for_audio"
+                android:padding="10dp"
+                android:src="@drawable/audio"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:paddingBottom="10dp"
+                android:text="Audio"
+                app:layout_constraintEnd_toEndOf="@+id/audioIcon"
+                app:layout_constraintStart_toStartOf="@+id/audioIcon"
+                app:layout_constraintTop_toBottomOf="@+id/audioIcon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/contactIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_weight="20"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/circle_for_contact"
+                android:padding="10dp"
+                android:src="@drawable/contact"
+                app:layout_constraintEnd_toEndOf="@+id/appCompatTextView2"
+                app:layout_constraintStart_toStartOf="@+id/appCompatTextView2"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:paddingBottom="10dp"
+                android:layout_marginTop="5dp"
+                android:text="Contact"
+                app:layout_constraintEnd_toEndOf="@+id/contactIcon"
+                app:layout_constraintStart_toStartOf="@+id/contactIcon"
+                app:layout_constraintTop_toBottomOf="@+id/contactIcon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="50dp"

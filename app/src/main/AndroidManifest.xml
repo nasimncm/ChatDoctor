@@ -4,7 +4,14 @@
     package="com.example.chatdoctor">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+   <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+  <uses-feature android:name="android.hardware.camera.any"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +23,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatDoctor"
         tools:targetApi="31">
+        <activity
+            android:name=".activity.Search"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".activity.ProfileSection"
             android:exported="false">
@@ -73,7 +87,7 @@
         </activity>
         <activity
             android:name=".login.MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>

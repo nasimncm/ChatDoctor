@@ -22,4 +22,5 @@
     <string name="text_messages">Message</string>
     <string name="update_profile">Update Profile</string>
     <string name="status">Offline</string>
+    <string name="tap_to_chat">Tap to chat</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.chatdoctor.adapter
 
 import android.content.Context
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,11 +55,23 @@ class MessageAdapter(
             holder.sentMessage.text = currentMessage.message
             //  viewHolder.sentMessage.text = currentMessage.message
 
+            if (currentMessage.message.equals("photo")){
+                viewHolder.sentImage.visibility = View.VISIBLE
+                viewHolder.sentMessage.visibility = View.GONE
+                Glide.with(context).load(currentMessage.imageUrl).into(viewHolder.sentImage)
+            }else{
+                viewHolder.sentImage.visibility = View.GONE
+                viewHolder.sentMessage.visibility = View.VISIBLE
+            }
+
             if (currentMessage.message.equals("photo")) {
                 viewHolder.sentImage.visibility = View.VISIBLE
                 viewHolder.sentMessage.visibility = View.GONE
                 Glide.with(context).load(currentMessage.imageUrl)
                     .placeholder(R.drawable.placeholder).into(viewHolder.sentImage)
+            }else{
+                viewHolder.sentImage.visibility = View.GONE
+                viewHolder.sentMessage.visibility = View.VISIBLE
             }
             viewHolder.itemView.setOnClickListener {
                 val view = LayoutInflater.from(context).inflate(R.layout.delete_layout_for_sender, null)
@@ -100,13 +113,27 @@ class MessageAdapter(
             val viewHolder = holder as ReceiveViewHolder
             holder.receiveMessage.text = currentMessage.message
             // viewHolder.receiveMessage.text = currentMessage.message
+            if (currentMessage.message.equals("cameraPhoto")){
+                viewHolder.receiveImage.visibility = View.VISIBLE
+                viewHolder.receiveMessage.visibility = View.GONE
+                Glide.with(context).load(currentMessage.imageUrl).into(viewHolder.receiveImage)
+            }else{
+                viewHolder.receiveImage.visibility = View.GONE
+                viewHolder.receiveMessage.visibility = View.VISIBLE
+            }
             if (currentMessage.message.equals("photo")) {
                 viewHolder.receiveImage.visibility = View.VISIBLE
                 viewHolder.receiveMessage.visibility = View.GONE
                 Glide.with(context).load(currentMessage.imageUrl)
                     .placeholder(R.drawable.placeholder)
                     .into(viewHolder.receiveImage)
-            }/*
+            }else{
+                viewHolder.receiveImage.visibility = View.GONE
+                viewHolder.receiveMessage.visibility = View.VISIBLE
+            }
+
+
+        /*
             viewHolder.itemView.setOnClickListener {
                 val view = LayoutInflater.from(context).inflate(R.layout.delete_layout_for_receiver, null)
                 val binding: DeleteLayoutForReceiverBinding = DeleteLayoutForReceiverBinding.bind(view)

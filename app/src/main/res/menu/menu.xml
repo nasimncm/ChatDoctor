@@ -13,12 +13,12 @@
         app:showAsAction="never">
 
     </item>
-    <item
+    <!--<item
         android:id="@+id/search"
         android:icon="@drawable/search"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView">
 
-    </item>
+    </item>-->
 </menu>

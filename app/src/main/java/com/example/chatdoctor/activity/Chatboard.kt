@@ -82,6 +82,11 @@ class Chatboard : AppCompatActivity() {
         userRecyclerView.adapter = adapter
         getChatList()// create function for show the user data
 
+        searchUser.setOnClickListener {
+            val intent = Intent(this, Search::class.java)
+            startActivity(intent)
+        }
+
     }
 
 
@@ -117,7 +122,7 @@ class Chatboard : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu, menu)
 
 
-        val searchViewItem = menu?.findItem(R.id.search)
+       /* val searchViewItem = menu?.findItem(R.id.search)
         val searchView = MenuItemCompat.getActionView(searchViewItem) as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -138,7 +143,7 @@ class Chatboard : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
                 return false
             }
-        })
+        })*/
 
 
 
@@ -152,15 +157,11 @@ class Chatboard : AppCompatActivity() {
             R.id.profile -> {
                 val intent = Intent(this, ProfileSection::class.java)
                 startActivity(intent)
-            }
+            }/*
             R.id.search -> {
-                val id = item.itemId
-                if (id == R.id.search){
-                    val searchManager = this.getSystemService(Context.SEARCH_SERVICE) as SearchManager
-                    searchManager.setOnDismissListener {  }
-                    onSearchRequested()
-                }
-            }
+                val intent = Intent(this, Search::class.java)
+                startActivity(intent)
+            }*/
             R.id.logout -> {
                 prefHelper.clear()
                 firebaseAuth.signOut()
