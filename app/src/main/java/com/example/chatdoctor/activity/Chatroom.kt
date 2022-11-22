@@ -1,19 +1,22 @@
 package com.example.chatdoctor.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.icu.util.Calendar
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -49,8 +52,8 @@ class Chatroom : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var storage: FirebaseStorage
     private var profileImage: String? = null
-    private lateinit var senderUid: String
     private lateinit var receiverUid: String
+    private lateinit var senderUid: String
     private lateinit var binding: ActivityChatroomBinding
     private lateinit var dialog: ProgressDialog
     private lateinit var date: Date
@@ -60,6 +63,8 @@ class Chatroom : AppCompatActivity() {
     private val imageRequestCode = 1888
     private val cameraRequestCode = 1
     private val camera = 2
+    private val contactPermissionCode = 3
+    private val contactPickCode = 4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,6 @@ class Chatroom : AppCompatActivity() {
         //database, firebase storage, senderUid, date initialize
         database = FirebaseDatabase.getInstance()
         storage = FirebaseStorage.getInstance()
-        senderUid = FirebaseDatabase.getInstance().toString()
         date = Date()
 
         //dialog setup when data not load
@@ -92,8 +96,8 @@ class Chatroom : AppCompatActivity() {
 
         // code for online, offline & typing Status show
         //taking reference of receiver and sender UID
-        val receiverUid = intent.getStringExtra("uid")
-        val senderUid = FirebaseAuth.getInstance().currentUser?.uid
+        receiverUid = intent.getStringExtra("uid").toString()
+        senderUid = FirebaseAuth.getInstance().currentUser?.uid.toString()
         //database initialize
         databaseAuth = FirebaseDatabase.getInstance().reference
         // create presence folder in database and add in receiverUID
@@ -111,6 +115,7 @@ class Chatroom : AppCompatActivity() {
                         }
                     }
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
 
@@ -139,21 +144,9 @@ class Chatroom : AppCompatActivity() {
         val mediaPlayer = MediaPlayer()
         fun sentPlayTone() {
             try {
-                val afd = applicationContext.assets.openFd("sent.mp3")
-                mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                afd.close()
-                mediaPlayer.prepare()
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-            }
-            mediaPlayer.start()
-        }
-
-        fun receivedTone() {
-            try {
-                val afd = applicationContext.assets.openFd("tone.mp3")
-                mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                afd.close()
+                val sentPlayTone = applicationContext.assets.openFd("sent.mp3")
+                mediaPlayer.setDataSource(sentPlayTone.fileDescriptor, sentPlayTone.startOffset, sentPlayTone.length)
+                sentPlayTone.close()
                 mediaPlayer.prepare()
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -162,7 +155,6 @@ class Chatroom : AppCompatActivity() {
         }
 
         msgSend.setOnClickListener {
-            // val chatMessageId = UUID.randomUUID().toString()
             val myMessage = etMessage.text.toString()
             if (myMessage.isNotEmpty()) {
                 val messageObject = Message(myMessage, senderUid)
@@ -171,7 +163,6 @@ class Chatroom : AppCompatActivity() {
                     .setValue(messageObject).addOnSuccessListener {
                         databaseAuth.child("chats").child(receiverRoom!!).child("messages").push()
                             .setValue(messageObject)
-                        receivedTone()
                     }
                 etMessage.setText("")
 
@@ -243,6 +234,31 @@ class Chatroom : AppCompatActivity() {
             startActivityForResult(intent, imageRequestCode)
         }
 
+        contactIcon.setOnClickListener {
+            if (checkContactPermission()) {
+                pickContact()
+            } else {
+                requestContactPermission()
+            }
+        }
+
+    }
+
+    private fun checkContactPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestContactPermission() {
+        val permission = arrayOf(Manifest.permission.READ_CONTACTS)
+        ActivityCompat.requestPermissions(this, permission, contactPermissionCode)
+    }
+
+    private fun pickContact() {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+        startActivityForResult(intent, contactPickCode)
     }
 
     override fun onRequestPermissionsResult(
@@ -261,14 +277,29 @@ class Chatroom : AppCompatActivity() {
                 ).show()
             }
         }
+        if (requestCode == contactPermissionCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                pickContact()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Oops you just denied the contact permission. " + "Don't worry you can allow in the settings",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     val mediaPlayer = MediaPlayer()
-    fun playTone() {
+    fun imageSentPlayTone() {
         try {
-            val afd = applicationContext.assets.openFd("sent.mp3")
-            mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            afd.close()
+            val sentTone = applicationContext.assets.openFd("sent.mp3")
+            mediaPlayer.setDataSource(
+                sentTone.fileDescriptor,
+                sentTone.startOffset,
+                sentTone.length
+            )
+            sentTone.close()
             mediaPlayer.prepare()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -276,11 +307,15 @@ class Chatroom : AppCompatActivity() {
         mediaPlayer.start()
     }
 
-    fun receivedPlayTone() {
+    fun imageReceivedPlayTone() {
         try {
-            val afd = applicationContext.assets.openFd("tone.mp3")
-            mediaPlayer.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            afd.close()
+            val receivedTone = applicationContext.assets.openFd("tone.mp3")
+            mediaPlayer.setDataSource(
+                receivedTone.fileDescriptor,
+                receivedTone.startOffset,
+                receivedTone.length
+            )
+            receivedTone.close()
             mediaPlayer.prepare()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -288,10 +323,80 @@ class Chatroom : AppCompatActivity() {
         mediaPlayer.start()
     }
 
+    @SuppressLint("Range")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("onActivityResult: ", requestCode.toString())
+        if (requestCode == contactPickCode) {
+            if (data != null) {
+               // sentMessage.text = ""
+                val cursor1: Cursor
+                val cursor2: Cursor?
+                val selectedContact = data.data
+                cursor1 = contentResolver.query(selectedContact!!, null, null, null, null)!!
+                if (cursor1.moveToFirst()) {
+                 /*   val contactId =
+                        cursor1.getString(cursor1.getColumnIndex(ContactsContract.Contacts._ID))
+                    val contactName =
+                        cursor1.getString(cursor1.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))*/
+                    val idResults =
+                        cursor1.getString(cursor1.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
+                    val idResultHold = idResults.toInt()
+                    /*sentMessage.append("ID: $contactId")
+                    sentMessage.append("\nName: $contactName")*/
+                    if (idResultHold == 1) {
+                        cursor2 = contentResolver.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " ,
+                            null,
+                            null
+                        )
+                        while (cursor2!!.moveToNext()) {
+                            val contactNumber =
+                                cursor2.getString(cursor2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                            sentMessage.append("\nPhone: $contactNumber")
+                        }
+                        cursor2.close()
+                    }
+                    cursor1.close()
+                }
+                val calendar = Calendar.getInstance()
+                dialog.show()
+                val refrance = storage.reference.child("chats")
+                    .child(calendar.timeInMillis.toString() + "")
+                refrance.putFile(selectedContact).addOnCompleteListener { task ->
+                    dialog.dismiss()
+                    cardView1.visibility = View.GONE
+                    if (task.isSuccessful) {
+
+                        refrance.downloadUrl.addOnSuccessListener { uri ->
+                            // val filePath = uri.toString()
+                            val etMessage: String = messageBox.text.toString()
+                            val date = Date()
+                            val message = Message(etMessage, senderUid, date.time)
+                            message.message = "contact"
+                            //   message.imageUrl = filePath
+                            val contactRandomKey = database.reference.push().key
+                            val lastContObj = HashMap<String, Any>()
+                            lastContObj["lastMsg"] = message.message!!
+                            lastContObj["lastMsgTime"] = date.time
+                            database.reference.child("chats").updateChildren(lastContObj)
+                            database.reference.child("chats").child(receiverRoom!!)
+                                .updateChildren(lastContObj)
+                            database.reference.child("chats").child(senderRoom!!)
+                                .child("messages").child(contactRandomKey!!).setValue(message)
+                                .addOnSuccessListener {
+                                    imageReceivedPlayTone()
+                                    database.reference.child("chats").child(receiverRoom!!)
+                                        .child("messages").child(contactRandomKey).setValue(message)
+                                        .addOnSuccessListener {}
+                                }
+                        }
+                    }
+                }
+            }
+        }
         if (requestCode == cameraRequestCode) {
             val clickImage = data?.extras?.get("data") as Bitmap
             val stream = ByteArrayOutputStream()
@@ -303,7 +408,8 @@ class Chatroom : AppCompatActivity() {
                 storage.reference.child("chats").child(calendar.timeInMillis.toString() + "")
             cameraReference.putBytes(data).addOnCompleteListener { task ->
                 dialog.dismiss()
-                playTone()
+                cardView1.visibility = View.GONE
+                imageSentPlayTone()
                 if (task.isSuccessful) {
                     cameraReference.downloadUrl.addOnSuccessListener { uri ->
                         val filePath = uri.toString()
@@ -317,11 +423,10 @@ class Chatroom : AppCompatActivity() {
                         lastClickObj["lastClick"] = message.message!!
                         lastClickObj["lastClickTime"] = date.time
                         database.reference.child("chats").updateChildren(lastClickObj)
-                        database.reference.child("chats").child(receiverRoom!!)
-                            .updateChildren(lastClickObj)
-                        database.reference.child("chats").child(senderRoom!!).child("messages")
-                            .child(randomKeys!!).setValue(message).addOnSuccessListener {
-                                receivedPlayTone()
+                        database.reference.child("chats").child(senderRoom!!)
+                            .child("messages").child(randomKeys!!).setValue(message)
+                            .addOnSuccessListener {
+                                imageReceivedPlayTone()
                                 database.reference.child("chats").child(receiverRoom!!)
                                     .child("messages").child(randomKeys).setValue(message)
                                     .addOnSuccessListener {}
@@ -341,7 +446,8 @@ class Chatroom : AppCompatActivity() {
                         .child(calendar.timeInMillis.toString() + "")
                     refence.putFile(selectedImage!!).addOnCompleteListener { task ->
                         dialog.dismiss()
-                        playTone()
+                        cardView1.visibility = View.GONE
+                        imageSentPlayTone()
                         if (task.isSuccessful) {
                             refence.downloadUrl.addOnSuccessListener { uri ->
                                 val filePath = uri.toString()
@@ -356,12 +462,9 @@ class Chatroom : AppCompatActivity() {
                                 lastMsgObj["lastMsg"] = message.message!!
                                 lastMsgObj["lastMsgTime"] = date.time
                                 database.reference.child("chats").updateChildren(lastMsgObj)
-                                database.reference.child("chats").child(receiverRoom!!)
-                                    .updateChildren(lastMsgObj)
                                 database.reference.child("chats").child(senderRoom!!)
                                     .child("messages").child(randomKey!!).setValue(message)
                                     .addOnSuccessListener {
-                                        receivedPlayTone()
                                         database.reference.child("chats").child(receiverRoom!!)
                                             .child("messages").child(randomKey).setValue(message)
                                             .addOnSuccessListener {}
@@ -385,14 +488,4 @@ class Chatroom : AppCompatActivity() {
         val currentId = FirebaseAuth.getInstance().uid
         database.reference.child("presence").child(currentId!!).setValue("Offline")
     }
-
-//    fun getImageData(bmp: Bitmap) {
-//        val bao = ByteArrayOutputStream()
-//        bmp.compress(Bitmap.CompressFormat.PNG, 100, bao) // bmp is bitmap from user image file
-//        bmp.recycle()
-//        val byteArray: ByteArray = bao.toByteArray()
-//        val imageB64: String = Base64.encodeToString(byteArray, Base64.URL_SAFE)
-//        //  store & retrieve this string which is URL safe(can be used to store in FBDB) to firebase
-//        // Use either Realtime Database or Firestore
-//    }
 }

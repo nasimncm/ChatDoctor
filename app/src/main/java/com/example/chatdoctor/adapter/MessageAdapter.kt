@@ -1,6 +1,7 @@
 package com.example.chatdoctor.adapter
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
@@ -53,17 +54,6 @@ class MessageAdapter(
 
             val viewHolder = holder as SentViewHolder
             holder.sentMessage.text = currentMessage.message
-            //  viewHolder.sentMessage.text = currentMessage.message
-
-            if (currentMessage.message.equals("photo")){
-                viewHolder.sentImage.visibility = View.VISIBLE
-                viewHolder.sentMessage.visibility = View.GONE
-                Glide.with(context).load(currentMessage.imageUrl).into(viewHolder.sentImage)
-            }else{
-                viewHolder.sentImage.visibility = View.GONE
-                viewHolder.sentMessage.visibility = View.VISIBLE
-            }
-
             if (currentMessage.message.equals("photo")) {
                 viewHolder.sentImage.visibility = View.VISIBLE
                 viewHolder.sentMessage.visibility = View.GONE
@@ -112,15 +102,6 @@ class MessageAdapter(
         } else {
             val viewHolder = holder as ReceiveViewHolder
             holder.receiveMessage.text = currentMessage.message
-            // viewHolder.receiveMessage.text = currentMessage.message
-            if (currentMessage.message.equals("cameraPhoto")){
-                viewHolder.receiveImage.visibility = View.VISIBLE
-                viewHolder.receiveMessage.visibility = View.GONE
-                Glide.with(context).load(currentMessage.imageUrl).into(viewHolder.receiveImage)
-            }else{
-                viewHolder.receiveImage.visibility = View.GONE
-                viewHolder.receiveMessage.visibility = View.VISIBLE
-            }
             if (currentMessage.message.equals("photo")) {
                 viewHolder.receiveImage.visibility = View.VISIBLE
                 viewHolder.receiveMessage.visibility = View.GONE
@@ -169,5 +150,18 @@ class MessageAdapter(
 
     override fun getItemCount(): Int {
         return messageList.size
+    }
+
+    fun receivedTone() {
+        val mediaPlayer = MediaPlayer()
+        try {
+            val receivedPlayTone = context.assets.openFd("tone.mp3")
+            mediaPlayer.setDataSource(receivedPlayTone.fileDescriptor, receivedPlayTone.startOffset, receivedPlayTone.length)
+            receivedPlayTone.close()
+            mediaPlayer.prepare()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        mediaPlayer.start()
     }
 }

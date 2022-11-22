@@ -73,6 +73,7 @@
         android:id="@+id/rvChat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="7dp"
         android:layout_above="@+id/cardView"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
