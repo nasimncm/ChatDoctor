@@ -78,11 +78,13 @@ class Login : AppCompatActivity() {
                     } else {
                         //if not success show the error messages
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        mProgress.dismiss()
                     }
                 }
             } else {
                 //if email & password empty
                 Toast.makeText(this, "Invalid email address", Toast.LENGTH_SHORT).show()
+                mProgress.dismiss()
             }
         }
     }

@@ -1,8 +1,6 @@
 package com.example.chatdoctor.activity
 
 import android.app.ProgressDialog
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -82,11 +80,6 @@ class Chatboard : AppCompatActivity() {
         userRecyclerView.adapter = adapter
         getChatList()// create function for show the user data
 
-        searchUser.setOnClickListener {
-            val intent = Intent(this, Search::class.java)
-            startActivity(intent)
-        }
-
     }
 
 
@@ -120,16 +113,15 @@ class Chatboard : AppCompatActivity() {
     //menu creation
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
-
-
-       /* val searchViewItem = menu?.findItem(R.id.search)
+        val searchViewItem = menu?.findItem(R.id.searchMenu)
         val searchView = MenuItemCompat.getActionView(searchViewItem) as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchView.clearFocus()
-                if (adapter.equals(query)){
+                if (adapter.equals(query)) {
                     adapter.filter.filter(query)
                 }
+                userList.clear()
                 return false
             }
 
@@ -143,7 +135,7 @@ class Chatboard : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
                 return false
             }
-        })*/
+        })
 
 
 
@@ -157,8 +149,8 @@ class Chatboard : AppCompatActivity() {
             R.id.profile -> {
                 val intent = Intent(this, ProfileSection::class.java)
                 startActivity(intent)
-            }/*
-            R.id.search -> {
+            }
+            /*R.id.searchMenu -> {
                 val intent = Intent(this, Search::class.java)
                 startActivity(intent)
             }*/

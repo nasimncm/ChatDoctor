@@ -93,10 +93,11 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/documentIcon"
+                android:id="@+id/contactIcon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="30dp"
@@ -104,7 +105,7 @@
                 android:layout_weight="20"
                 android:background="@drawable/circle_bg"
                 android:padding="10dp"
-                android:src="@drawable/document"
+                android:src="@drawable/contact"
                 app:layout_constraintStart_toStartOf="@+id/constraint"
                 app:layout_constraintTop_toTopOf="@+id/constraint"
                 app:tint="@color/white" />
@@ -115,10 +116,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:text="Document"
-                app:layout_constraintEnd_toEndOf="@+id/documentIcon"
-                app:layout_constraintStart_toStartOf="@+id/documentIcon"
-                app:layout_constraintTop_toBottomOf="@+id/documentIcon" />
+                android:text="Contact"
+                app:layout_constraintEnd_toEndOf="@+id/contactIcon"
+                app:layout_constraintStart_toStartOf="@+id/contactIcon"
+                app:layout_constraintTop_toBottomOf="@+id/contactIcon" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/galleryIcon"
@@ -130,7 +131,7 @@
                 android:padding="10dp"
                 android:src="@drawable/gallery"
                 app:layout_constraintEnd_toStartOf="@+id/cameraIcon"
-                app:layout_constraintStart_toEndOf="@+id/documentIcon"
+                app:layout_constraintStart_toEndOf="@+id/contactIcon"
                 app:layout_constraintTop_toTopOf="@+id/constraint"
                 app:tint="@color/white" />
 
@@ -169,7 +170,7 @@
                 app:layout_constraintStart_toStartOf="@+id/cameraIcon"
                 app:layout_constraintTop_toBottomOf="@+id/cameraIcon" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <!--<androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/audioIcon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -195,14 +196,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/audioIcon" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/contactIcon"
+                android:id="@+id/documentIcon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_weight="20"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/circle_for_contact"
                 android:padding="10dp"
-                android:src="@drawable/contact"
+                android:src="@drawable/document"
                 app:layout_constraintEnd_toEndOf="@+id/appCompatTextView2"
                 app:layout_constraintStart_toStartOf="@+id/appCompatTextView2"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
@@ -215,9 +216,9 @@
                 android:paddingBottom="10dp"
                 android:layout_marginTop="5dp"
                 android:text="Contact"
-                app:layout_constraintEnd_toEndOf="@+id/contactIcon"
-                app:layout_constraintStart_toStartOf="@+id/contactIcon"
-                app:layout_constraintTop_toBottomOf="@+id/contactIcon" />
+                app:layout_constraintEnd_toEndOf="@+id/documentIcon"
+                app:layout_constraintStart_toStartOf="@+id/documentIcon"
+                app:layout_constraintTop_toBottomOf="@+id/documentIcon" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

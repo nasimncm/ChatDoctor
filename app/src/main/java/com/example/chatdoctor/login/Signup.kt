@@ -71,16 +71,19 @@ class Signup : AppCompatActivity() {
                                 //if not success show the error messages
                                 Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT)
                                     .show()
+                                mProgress.dismiss()
                             }
                         }
 
                 } else {
                     //if password not match
                     Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show()
+                    mProgress.dismiss()
                 }
             } else {
                 //if email & password empty
                 Toast.makeText(this, "Invalid email address", Toast.LENGTH_SHORT).show()
+                mProgress.dismiss()
             }
         }
     }
