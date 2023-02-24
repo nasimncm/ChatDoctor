@@ -20,7 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@color/white" />
 
-
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivBackButton"
         android:layout_width="39dp"

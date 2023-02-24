@@ -5,5 +5,8 @@ data class Message(
     var senderId: String? = null,
     var timeStamp: Long? = null,
     var messageId: String? = null,
-    var imageUrl: String? = null
+    var imageUrl: String? = null,
+    var isRead: Boolean? = null,
+    var receiverId: String? = null,
+
 )

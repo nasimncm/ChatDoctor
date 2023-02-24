@@ -1,6 +1,7 @@
 package com.example.chatdoctor.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.text.Layout
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatdoctor.R
+import com.example.chatdoctor.activity.Chatroom
 import com.example.chatdoctor.databinding.DeleteLayoutForReceiverBinding
 import com.example.chatdoctor.databinding.DeleteLayoutForSenderBinding
 import com.example.chatdoctor.model.Message
@@ -50,6 +52,12 @@ class MessageAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentMessage = messageList[position]
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, UserAdapter::class.java)
+            intent.putExtra("message", currentMessage.message)
+            context.startActivity(intent)
+        }
         if (holder.javaClass == SentViewHolder::class.java) {
 
             val viewHolder = holder as SentViewHolder
@@ -114,7 +122,6 @@ class MessageAdapter(
             }
 
 
-        /*
             viewHolder.itemView.setOnClickListener {
                 val view = LayoutInflater.from(context).inflate(R.layout.delete_layout_for_receiver, null)
                 val binding: DeleteLayoutForReceiverBinding = DeleteLayoutForReceiverBinding.bind(view)
@@ -135,7 +142,7 @@ class MessageAdapter(
                 binding.cancel.setOnClickListener { dialog.dismiss() }
                 dialog.show()
                 false
-            }*/
+            }
         }
     }
 
@@ -152,16 +159,5 @@ class MessageAdapter(
         return messageList.size
     }
 
-    fun receivedTone() {
-        val mediaPlayer = MediaPlayer()
-        try {
-            val receivedPlayTone = context.assets.openFd("tone.mp3")
-            mediaPlayer.setDataSource(receivedPlayTone.fileDescriptor, receivedPlayTone.startOffset, receivedPlayTone.length)
-            receivedPlayTone.close()
-            mediaPlayer.prepare()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        mediaPlayer.start()
-    }
+
 }

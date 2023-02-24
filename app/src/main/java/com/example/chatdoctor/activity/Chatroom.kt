@@ -9,7 +9,6 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.icu.util.Calendar
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -58,6 +57,7 @@ class Chatroom : AppCompatActivity() {
     private lateinit var dialog: ProgressDialog
     private lateinit var date: Date
     private var isattachment = false
+    private var isRead = false
     var receiverRoom: String? = null
     var senderRoom: String? = null
     private val imageRequestCode = 1888
@@ -66,6 +66,7 @@ class Chatroom : AppCompatActivity() {
     private val contactPermissionCode = 3
     private val contactPickCode = 4
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityChatroomBinding = ActivityChatroomBinding.inflate(layoutInflater)
@@ -125,12 +126,13 @@ class Chatroom : AppCompatActivity() {
         databaseAuth.child("chats").child(senderRoom!!).child("messages")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     messageList.clear()
+
                     for (postSnapshot in snapshot.children) {
                         val message = postSnapshot.getValue(Message::class.java)
                         message!!.messageId = postSnapshot.key
                         messageList.add(message)
+
                     }
                     messageAdapter.notifyDataSetChanged()
                     chatRecyclerView.scrollToPosition(messageList.size - 1)
@@ -145,7 +147,11 @@ class Chatroom : AppCompatActivity() {
         fun sentPlayTone() {
             try {
                 val sentPlayTone = applicationContext.assets.openFd("sent.mp3")
-                mediaPlayer.setDataSource(sentPlayTone.fileDescriptor, sentPlayTone.startOffset, sentPlayTone.length)
+                mediaPlayer.setDataSource(
+                    sentPlayTone.fileDescriptor,
+                    sentPlayTone.startOffset,
+                    sentPlayTone.length
+                )
                 sentPlayTone.close()
                 mediaPlayer.prepare()
             } catch (e: java.lang.Exception) {
@@ -154,10 +160,22 @@ class Chatroom : AppCompatActivity() {
             mediaPlayer.start()
         }
 
+        /*val readMessageObjects = HashMap<String, Any>()
+        readMessageObjects["read"] = true
+        database.reference.child("chats").child(receiverRoom!!).child("messages")
+            .updateChildren(readMessageObjects)*/
+
         msgSend.setOnClickListener {
             val myMessage = etMessage.text.toString()
             if (myMessage.isNotEmpty()) {
-                val messageObject = Message(myMessage, senderUid)
+                val messageObject = Message()
+                messageObject.apply {
+                    message = myMessage
+                    senderId = senderUid
+                    receiverId = receiverUid
+                    isRead = false
+
+                }
                 sentPlayTone()
                 databaseAuth.child("chats").child(senderRoom!!).child("messages").push()
                     .setValue(messageObject).addOnSuccessListener {
@@ -166,9 +184,22 @@ class Chatroom : AppCompatActivity() {
                     }
                 etMessage.setText("")
 
+                val c = Calendar.getInstance()
+                val hour = c.get(Calendar.HOUR_OF_DAY)
+                val minuts = c.get(Calendar.MINUTE)
+                val timeStamp = "$hour:$minuts"
+                val messageObjects = HashMap<String, Any>()
+                messageObjects["lastmessage"] = myMessage
+                messageObjects["messageTime"] = timeStamp
+
+                database.reference.child("chats").updateChildren(messageObjects)
+
+
             } else {
                 Toast.makeText(this, "Write some message in the box", Toast.LENGTH_SHORT).show()
             }
+
+
         }
 
 
@@ -329,26 +360,20 @@ class Chatroom : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == contactPickCode) {
             if (data != null) {
-               // sentMessage.text = ""
+                // sentMessage.text = ""
                 val cursor1: Cursor
                 val cursor2: Cursor?
                 val selectedContact = data.data
                 cursor1 = contentResolver.query(selectedContact!!, null, null, null, null)!!
                 if (cursor1.moveToFirst()) {
-                 /*   val contactId =
-                        cursor1.getString(cursor1.getColumnIndex(ContactsContract.Contacts._ID))
-                    val contactName =
-                        cursor1.getString(cursor1.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))*/
                     val idResults =
                         cursor1.getString(cursor1.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))
                     val idResultHold = idResults.toInt()
-                    /*sentMessage.append("ID: $contactId")
-                    sentMessage.append("\nName: $contactName")*/
                     if (idResultHold == 1) {
                         cursor2 = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " ,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ",
                             null,
                             null
                         )
@@ -397,6 +422,7 @@ class Chatroom : AppCompatActivity() {
                 }
             }
         }
+        //Camera Image implementation
         if (requestCode == cameraRequestCode) {
             val clickImage = data?.extras?.get("data") as Bitmap
             val stream = ByteArrayOutputStream()
@@ -436,6 +462,8 @@ class Chatroom : AppCompatActivity() {
             }
 
         }
+
+        //Image implementation
         if (requestCode == imageRequestCode) {
             if (data != null) {
                 if (data.data != null) {

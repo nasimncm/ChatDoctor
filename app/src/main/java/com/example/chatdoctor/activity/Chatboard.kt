@@ -2,9 +2,12 @@ package com.example.chatdoctor.activity
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
@@ -13,16 +16,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.chatdoctor.R
 import com.example.chatdoctor.adapter.UserAdapter
 import com.example.chatdoctor.login.MainActivity
+import com.example.chatdoctor.model.Message
 import com.example.chatdoctor.model.UserModel
 import com.example.chatdoctor.sharepref.Constant
 import com.example.chatdoctor.sharepref.PrefHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_chatboard.*
+import kotlinx.android.synthetic.main.user_layout.*
 
 class Chatboard : AppCompatActivity() {
     private lateinit var userRecyclerView: RecyclerView
     private lateinit var userList: ArrayList<UserModel>
+    private lateinit var messageList: ArrayList<Message>
     private lateinit var adapter: UserAdapter
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseAuth: DatabaseReference
@@ -31,6 +37,7 @@ class Chatboard : AppCompatActivity() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgress: ProgressDialog
     private lateinit var search: SearchView
+    private var notification = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatboard)
@@ -81,6 +88,8 @@ class Chatboard : AppCompatActivity() {
         getChatList()// create function for show the user data
 
     }
+
+
 
 
     fun getChatList() {
