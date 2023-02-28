@@ -16,6 +16,7 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -175,6 +176,16 @@ class Chatroom : AppCompatActivity() {
                     receiverId = receiverUid
                     isRead = false
 
+                    val c = Calendar.getInstance()
+                    val hour = c.get(Calendar.HOUR_OF_DAY)
+                    val minuts = c.get(Calendar.MINUTE)
+                    val timeStamp = "$hour:$minuts"
+                    val messageObjects = HashMap<String, Any>()
+                    messageObjects["lastMessage"] = message!!
+                    messageObjects["messageTime"] = timeStamp
+
+                    database.reference.child("chats").updateChildren(messageObjects)
+
                 }
                 sentPlayTone()
                 databaseAuth.child("chats").child(senderRoom!!).child("messages").push()
@@ -184,15 +195,6 @@ class Chatroom : AppCompatActivity() {
                     }
                 etMessage.setText("")
 
-                val c = Calendar.getInstance()
-                val hour = c.get(Calendar.HOUR_OF_DAY)
-                val minuts = c.get(Calendar.MINUTE)
-                val timeStamp = "$hour:$minuts"
-                val messageObjects = HashMap<String, Any>()
-                messageObjects["lastmessage"] = myMessage
-                messageObjects["messageTime"] = timeStamp
-
-                database.reference.child("chats").updateChildren(messageObjects)
 
 
             } else {

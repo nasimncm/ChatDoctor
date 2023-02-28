@@ -59,7 +59,7 @@
             android:background="@drawable/circle_bg"
             android:padding="5dp"
             android:text="1"
-            android:visibility="visible"
+            android:visibility="gone"
             android:textAlignment="center"
             android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"

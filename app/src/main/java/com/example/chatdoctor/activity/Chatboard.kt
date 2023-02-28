@@ -1,13 +1,18 @@
 package com.example.chatdoctor.activity
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
@@ -87,11 +92,31 @@ class Chatboard : AppCompatActivity() {
         userRecyclerView.adapter = adapter
         getChatList()// create function for show the user data
 
+        if (checkInternet(this)){
+        }else{
+            mProgress.dismiss()
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
+        }
+
+
     }
 
-
-
-
+    //Internet Connectivity
+    private fun checkInternet(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+            val network = connectivityManager.activeNetwork ?: return false
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network)
+            return when{
+                activeNetwork!!.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)-> true
+                else ->false
+            }
+        }else{
+            @Suppress("DEPRECATION") val networkInfo = connectivityManager.activeNetworkInfo?: return false
+            @Suppress("DEPRECATION") return networkInfo.isConnected
+        }
+    }
     fun getChatList() {
         mProgress.show()
         //get the data from database "user" section

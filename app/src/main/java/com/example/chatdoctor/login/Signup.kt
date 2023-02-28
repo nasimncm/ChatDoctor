@@ -3,6 +3,7 @@ package com.example.chatdoctor.login
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,11 +11,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chatdoctor.R
 import com.example.chatdoctor.activity.Profile
+import com.example.chatdoctor.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class Signup : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var userModel: UserModel
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
     private lateinit var mProgress: ProgressDialog
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +67,7 @@ class Signup : AppCompatActivity() {
                                 mProgress.dismiss()
                                 //if successful redirect to Profile creation
                                 val intent = Intent(this, Profile::class.java)
+                                intent.putExtra("email", userModel.email)
                                 startActivity(intent)
                                 finish()
                             } else {
