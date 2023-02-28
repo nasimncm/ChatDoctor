@@ -1,7 +1,9 @@
 package com.example.chatdoctor.activity
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.ConnectivityManager
@@ -88,14 +90,23 @@ class Chatboard : AppCompatActivity() {
 
         //Linear layout manager initialize in recycler view
 
+        //Internet Dialog show
+        val dialogBuilder= AlertDialog.Builder(this)
+        dialogBuilder.setTitle("Internet Connection Lost")
+        dialogBuilder.setMessage("Your Internet Connection is lost Please Check your wifi or Network")
+        dialogBuilder.setPositiveButton("Refresh") { dialogInterface: DialogInterface, i: Int ->
+            Toast.makeText(this, "Go to setting", Toast.LENGTH_LONG).show()
+        }
         //set the adapter in recycler view
         userRecyclerView.adapter = adapter
         getChatList()// create function for show the user data
 
+
         if (checkInternet(this)){
         }else{
             mProgress.dismiss()
-            Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
+          //  Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show()
+            dialogBuilder.create().show()
         }
 
 

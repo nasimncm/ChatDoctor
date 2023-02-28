@@ -91,13 +91,14 @@ class UserAdapter(
                             val message = postSnapshot.getValue(Message::class.java)
                             message!!.messageId = postSnapshot.key
                             msgList.add(message)
+
                         }
                         if (msgList.size > 0) {
                             msgNotiCounTV.visibility = View.VISIBLE
                             msgNotiCounTV.text = "${msgList.size}"
-                            sentPlayTone()
 
-                        } else {
+                        }
+                        else {
                             msgNotiCounTV.visibility = View.GONE
                         }
 
