@@ -36,6 +36,8 @@ import com.example.chatdoctor.model.Message
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
+import com.zegocloud.uikit.service.defines.ZegoUIKitUser
 import kotlinx.android.synthetic.main.activity_chatroom.*
 import kotlinx.android.synthetic.main.sent.*
 import java.io.ByteArrayOutputStream
@@ -43,6 +45,9 @@ import java.util.*
 
 
 class Chatroom : AppCompatActivity() {
+
+    private lateinit var voiceCallBtn: ZegoSendCallInvitationButton
+    private lateinit var videoCallBtn: ZegoSendCallInvitationButton
     private lateinit var chatRecyclerView: RecyclerView
     private lateinit var messageBox: EditText
     private lateinit var sendButton: ImageView
@@ -72,6 +77,14 @@ class Chatroom : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding: ActivityChatroomBinding = ActivityChatroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        voiceCallBtn = findViewById(R.id.voice_call_btn)
+        videoCallBtn = findViewById(R.id.video_call_btn)
+
+      // Video & Audio Call Implementation
+        val targetUserID = intent.getStringExtra("uid").toString()
+        setVoiceCall(targetUserID)
+        setVideoCall(targetUserID)
 
         //database, firebase storage, senderUid, date initialize
         database = FirebaseDatabase.getInstance()
@@ -275,6 +288,18 @@ class Chatroom : AppCompatActivity() {
             }
         }
 
+    }
+    // Video & Audio Call Implementation
+    fun setVoiceCall(targetUserID: String?) {
+        voiceCallBtn.setIsVideoCall(false)
+        voiceCallBtn.resourceID = "zego_uikit_call"
+        voiceCallBtn.setInvitees(listOf(ZegoUIKitUser(targetUserID)))
+    }
+    // Video & Audio Call Implementation
+    fun setVideoCall(targetUserID: String?) {
+        videoCallBtn.setIsVideoCall(true)
+        videoCallBtn.resourceID = "zego_uikit_call"
+        videoCallBtn.setInvitees(listOf(ZegoUIKitUser(targetUserID)))
     }
 
     private fun checkContactPermission(): Boolean {

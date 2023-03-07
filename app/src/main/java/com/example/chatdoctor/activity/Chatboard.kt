@@ -1,6 +1,7 @@
 package com.example.chatdoctor.activity
 
 import android.app.AlertDialog
+import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -10,6 +11,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -29,6 +31,9 @@ import com.example.chatdoctor.sharepref.Constant
 import com.example.chatdoctor.sharepref.PrefHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.zegocloud.uikit.prebuilt.call.config.ZegoNotificationConfig
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationService
 import kotlinx.android.synthetic.main.activity_chatboard.*
 import kotlinx.android.synthetic.main.user_layout.*
 
@@ -101,6 +106,11 @@ class Chatboard : AppCompatActivity() {
         userRecyclerView.adapter = adapter
         getChatList()// create function for show the user data
 
+        //Video & Audio Call Implementation
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        startServices(userId)
+
+        //Internet Connection check
 
         if (checkInternet(this)){
         }else{
@@ -110,6 +120,33 @@ class Chatboard : AppCompatActivity() {
         }
 
 
+    }
+
+    ////Video & Audio Call Implementation methode appId and Sign Id
+    fun startServices(userId: String){
+        val application = application
+        val appId: Long =1295700525
+        val appSign = "29d30986c7b0642c8b2f0a1c7e858389acea7cae665a39245b3c4b7f4262dc61"
+        val userName: String = userId
+
+        val callInvitationConfig = ZegoUIKitPrebuiltCallInvitationConfig()
+        callInvitationConfig.notifyWhenAppRunningInBackgroundOrQuit = true
+        val notificationConfig = ZegoNotificationConfig()
+        notificationConfig.sound = "zego_uikit_sound_call"
+        notificationConfig.channelID = "CallInvitation"
+        notificationConfig.channelName = "CallInvitation"
+        ZegoUIKitPrebuiltCallInvitationService.init(
+            application,
+            appId,
+            appSign,
+            userId,
+            userName,
+            callInvitationConfig
+        )
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        ZegoUIKitPrebuiltCallInvitationService.unInit()
     }
 
     //Internet Connectivity
